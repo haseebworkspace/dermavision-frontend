@@ -18,6 +18,7 @@
     "react-chartjs-2": "^5.3.1",
     "react-dom": "^19.2.7",
     "react-dropzone": "^19.1.1",
+    "react-hot-toast": "^2.6.0",
     "react-router-dom": "^7.18.2"
   },
   "devDependencies": {
