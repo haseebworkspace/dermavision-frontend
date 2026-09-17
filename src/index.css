@@ -162,3 +162,181 @@ input,textarea{font-family:inherit}
 .center-state{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--text3);padding:80px 0;text-align:center;font-size:14px}
 /* RESPONSIVE */
 @media(max-width:900px){.sidebar{position:fixed;left:-240px;top:0;z-index:99;transition:left .25s ease;height:100vh}.sidebar.open{left:0}.sidebar-overlay{display:block;position:fixed;inset:0;z-index:98;background:rgba(0,0,0,0.5)}.mobile-menu-btn{display:flex}.app-main{padding:60px 20px 32px}.dashboard-grid{grid-template-columns:1fr}.stats-row{grid-template-columns:1fr}.charts-grid{grid-template-columns:1fr}}
+/* Chat educational label */
+.chat-edu-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--accent2);
+  background: rgba(59,130,246,0.08);
+  border: 1px solid rgba(59,130,246,0.15);
+  border-radius: 8px;
+  padding: 7px 12px;
+  margin-bottom: 12px;
+}
+
+/* Markdown bubble */
+.markdown-bubble {
+  max-width: 80%;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.markdown-bubble p:last-child {
+  margin-bottom: 0;
+}
+/* ── AUTH MICROCOPY ────────────────────────────────────────────────────────── */
+.auth-microcopy {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text2);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-top: 16px;
+  line-height: 1.5;
+}
+
+.auth-microcopy svg {
+  color: var(--success);
+  flex-shrink: 0;
+}
+
+/* ── CONTRAST IMPROVEMENTS ─────────────────────────────────────────────────── */
+
+/* Placeholder text — more visible on dark bg */
+input::placeholder,
+textarea::placeholder {
+  color: #5a6a82 !important;
+  opacity: 1;
+}
+
+/* Field labels — slightly brighter */
+.field label {
+  color: #9aadc4;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Auth footer links — more visible */
+.auth-footer {
+  color: #7a8da6;
+}
+
+.auth-footer a {
+  color: var(--accent2);
+  font-weight: 500;
+}
+
+.auth-footer a:hover {
+  color: #93c5fd;
+  text-decoration: underline;
+}
+
+/* Label link (Forgot password) */
+.label-link {
+  color: var(--accent2);
+  font-size: 12px;
+}
+
+.label-link:hover {
+  color: #93c5fd;
+  text-decoration: underline;
+}
+
+/* Timestamps in history cards — more readable */
+.history-meta {
+  color: #6a7d96;
+  font-size: 12px;
+}
+
+/* Chart labels — better contrast */
+.card-label {
+  color: #6a7d96;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Disclaimer text — slightly brighter */
+.disclaimer {
+  color: #6a7d96;
+  font-size: 12px;
+}
+
+/* Gauge label */
+.gauge-label {
+  color: #6a7d96;
+  font-size: 12px;
+}
+
+/* Drop zone subtitle */
+.drop-sub {
+  color: #5a6a82;
+  font-size: 13px;
+}
+
+/* Page subtitle */
+.page-sub {
+  color: #7a8da6;
+  font-size: 14px;
+}
+
+/* Confidence percentage text */
+.confidence-pct {
+  color: #9aadc4;
+  font-size: 13px;
+  font-family: 'DM Mono', monospace;
+}
+
+/* Score chips text */
+.score-chip span {
+  color: #9aadc4;
+}
+
+/* User email in sidebar */
+.user-email {
+  color: #5a6a82;
+  font-size: 11px;
+}
+
+/* Stat card label */
+.stat-label {
+  color: #7a8da6;
+  font-size: 13px;
+}
+
+/* Empty state text */
+.center-state p,
+.empty-result p {
+  color: #6a7d96;
+}
+
+/* Chat input placeholder */
+.chat-input::placeholder {
+  color: #5a6a82;
+}
+
+/* Suggestion chips */
+.suggestion-chip {
+  color: #7a8da6;
+  border-color: rgba(255,255,255,0.1);
+  font-size: 13px;
+}
+
+.suggestion-chip:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+/* Result code subtitle */
+.result-code {
+  color: #6a7d96;
+  font-size: 11px;
+}

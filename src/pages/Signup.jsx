@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authAPI } from '../api/api';
-import { Microscope, Eye, EyeOff, ArrowRight, Loader2 } from 'lucide-react';
+import { Microscope, Eye, EyeOff, ArrowRight, Loader2, ShieldCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function Signup() {
@@ -28,9 +28,17 @@ export default function Signup() {
 
   return (
     <div className="auth-page">
-      <div className="auth-brand"><Microscope size={28} strokeWidth={1.5} /><span>DermaVision</span></div>
+      <div className="auth-brand">
+        <Microscope size={28} strokeWidth={1.5} />
+        <span>DermaVision</span>
+      </div>
+
       <div className="auth-card">
-        <div className="auth-header"><h1>Create account</h1><p>AI-powered skin lesion detection</p></div>
+        <div className="auth-header">
+          <h1>Create account</h1>
+          <p>AI-powered skin lesion screening platform</p>
+        </div>
+
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="field">
             <label>Username</label>
@@ -67,11 +75,23 @@ export default function Signup() {
               </button>
             </div>
           </div>
+
           <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? <Loader2 size={18} className="spin" /> : <>Create account <ArrowRight size={16} /></>}
+            {loading
+              ? <Loader2 size={18} className="spin" />
+              : <>Create account <ArrowRight size={16} /></>}
           </button>
         </form>
-        <p className="auth-footer">Already have an account? <Link to="/login">Sign in</Link></p>
+
+        {/* Security microcopy */}
+        <div className="auth-microcopy">
+          <ShieldCheck size={13} />
+          Your images are handled securely and used only for screening analysis.
+        </div>
+
+        <p className="auth-footer">
+          Already have an account? <Link to="/login">Sign in</Link>
+        </p>
       </div>
     </div>
   );

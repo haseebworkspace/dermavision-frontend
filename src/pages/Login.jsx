@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { authAPI } from '../api/api';
 import { useAuth } from '../context/AuthContext';
-import { Microscope, Eye, EyeOff, ArrowRight, Loader2 } from 'lucide-react';
+import { Microscope, Eye, EyeOff, ArrowRight, Loader2, ShieldCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function Login() {
@@ -30,12 +30,23 @@ export default function Login() {
 
   return (
     <div className="auth-page">
-      <div className="auth-brand"><Microscope size={28} strokeWidth={1.5} /><span>DermaVision</span></div>
+      <div className="auth-brand">
+        <Microscope size={28} strokeWidth={1.5} />
+        <span>DermaVision</span>
+      </div>
+
       <div className="auth-card">
-        <div className="auth-header"><h1>Welcome back</h1><p>Sign in to your DermaVision account</p></div>
+        <div className="auth-header">
+          <h1>Welcome back</h1>
+          <p>Sign in to your DermaVision account</p>
+        </div>
+
         {state?.verified && (
-          <div className="alert alert-success">Account verified! You can now sign in.</div>
+          <div className="alert alert-success">
+            Account verified! You can now sign in.
+          </div>
         )}
+
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="field">
             <label>Email address</label>
@@ -65,11 +76,23 @@ export default function Login() {
               </button>
             </div>
           </div>
+
           <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? <Loader2 size={18} className="spin" /> : <>Sign in <ArrowRight size={16} /></>}
+            {loading
+              ? <Loader2 size={18} className="spin" />
+              : <>Sign in <ArrowRight size={16} /></>}
           </button>
         </form>
-        <p className="auth-footer">No account? <Link to="/signup">Create one</Link></p>
+
+        {/* Security microcopy */}
+        <div className="auth-microcopy">
+          <ShieldCheck size={13} />
+          Your data is encrypted and your images are never shared with third parties.
+        </div>
+
+        <p className="auth-footer">
+          No account? <Link to="/signup">Create one</Link>
+        </p>
       </div>
     </div>
   );

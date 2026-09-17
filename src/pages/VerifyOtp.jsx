@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { authAPI } from '../api/api';
 import { useAuth } from '../context/AuthContext';
-import { Microscope, Loader2, MailCheck } from 'lucide-react';
+import { Microscope, Loader2, MailCheck, ShieldCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function VerifyOtp() {
@@ -56,13 +56,25 @@ export default function VerifyOtp() {
 
   return (
     <div className="auth-page">
-      <div className="auth-brand"><Microscope size={28} strokeWidth={1.5} /><span>DermaVision</span></div>
+      <div className="auth-brand">
+        <Microscope size={28} strokeWidth={1.5} />
+        <span>DermaVision</span>
+      </div>
+
       <div className="auth-card">
-        <div className="otp-icon-wrap"><MailCheck size={32} strokeWidth={1.5} /></div>
+        <div className="otp-icon-wrap">
+          <MailCheck size={32} strokeWidth={1.5} />
+        </div>
+
         <div className="auth-header">
           <h1>Check your email</h1>
-          <p>We sent a 6-digit code to <strong>{email || 'your email'}</strong></p>
+          <p>We sent a 6-digit verification code to<br />
+            <strong style={{ color:'var(--accent2)' }}>
+              {email ? email.replace(/(.{2})(.*)(@.*)/, '$1***$3') : 'your email'}
+            </strong>
+          </p>
         </div>
+
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="otp-grid" onPaste={handlePaste}>
             {otp.map((digit, i) => (
@@ -79,11 +91,23 @@ export default function VerifyOtp() {
               />
             ))}
           </div>
+
           <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? <Loader2 size={18} className="spin" /> : 'Verify & activate account'}
+            {loading
+              ? <Loader2 size={18} className="spin" />
+              : 'Verify & activate account'}
           </button>
         </form>
-        <p className="auth-footer">Wrong email? <Link to="/signup">Go back</Link></p>
+
+        {/* Security microcopy */}
+        <div className="auth-microcopy">
+          <ShieldCheck size={13} />
+          This code expires in 10 minutes. Do not share it with anyone.
+        </div>
+
+        <p className="auth-footer">
+          Wrong email? <Link to="/signup">Go back</Link>
+        </p>
       </div>
     </div>
   );
