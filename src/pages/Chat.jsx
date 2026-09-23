@@ -6,15 +6,15 @@ import ReactMarkdown from 'react-markdown';
 
 const SUGGESTIONS = [
   'What is Melanoma?',
-  'What does a high confidence score mean?',
-  'How does MobileNetV2 work?',
-  'What is the HAM10000 dataset?',
+  'What is Basal Cell Carcinoma?',
+  'what is Actinic Keratosis?',
+  'What is Melanocytic Nevi?',
 ];
 
 export default function Chat() {
   const [messages, setMessages] = useState([{
     role: 'assistant',
-    content: 'Hi! I am the DermaVision screening assistant. I can answer questions about skin lesion types, what your screening result means, and general skin health information. I cannot provide medical diagnoses — always consult a qualified dermatologist for medical advice.',
+    content: 'Hi! I am the DermaVision screening assistant. I can answer questions about skin lesion types, what your screening result means, and general skin health information. I cannot provide medical diagnoses  always consult a qualified dermatologist for medical advice.',
   }]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
