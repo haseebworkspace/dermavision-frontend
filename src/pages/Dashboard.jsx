@@ -3,7 +3,11 @@ import { useDropzone } from 'react-dropzone';
 import { scanAPI } from '../api/api';
 import { AppLayout } from '../components/Layout';
 import { jsPDF } from 'jspdf';
-import { Upload, ImagePlus, Loader2, AlertCircle, FileDown, RotateCcw, CheckCircle2, Info, ShieldAlert } from 'lucide-react';
+import {
+  Upload, ImagePlus, Loader2, AlertCircle, FileDown,
+  RotateCcw, CheckCircle2, Info, ShieldAlert,
+  Phone, MapPin, Clock, User
+} from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const LESION_MAP = [
@@ -37,6 +41,59 @@ function ConfidenceGauge({ value }) {
           fill="#e8edf5" fontSize="16" fontWeight="600" fontFamily="DM Mono, monospace">{pct}%</text>
       </svg>
       <span className="gauge-label">Confidence</span>
+    </div>
+  );
+}
+
+function DoctorCard({ doctor }) {
+  return (
+    <div style={{
+      background: 'var(--bg2)',
+      border: '1px solid var(--border2)',
+      borderRadius: 10,
+      padding: '12px 14px',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 6,
+    }}>
+      {/* Name + Specialty */}
+      <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+        <User size={14} style={{ color:'var(--accent2)', flexShrink:0 }} />
+        <div>
+          <p style={{ fontSize:13, fontWeight:600, color:'var(--text)', margin:0 }}>{doctor.name}</p>
+          <p style={{ fontSize:11, color:'var(--text2)', margin:0 }}>{doctor.specialty}</p>
+        </div>
+      </div>
+
+      {/* Hospital */}
+      <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+        <MapPin size={13} style={{ color:'var(--text3)', flexShrink:0 }} />
+        <p style={{ fontSize:12, color:'var(--text2)', margin:0 }}>{doctor.hospital}</p>
+      </div>
+
+      {/* Availability */}
+      <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+        <Clock size={13} style={{ color:'var(--text3)', flexShrink:0 }} />
+        <p style={{ fontSize:12, color:'var(--text2)', margin:0 }}>{doctor.availability}</p>
+      </div>
+
+      {/* Phone — clickable */}
+      <a
+        href={`tel:${doctor.phone}`}
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 6,
+          fontSize: 12,
+          color: '#22c55e',
+          fontWeight: 500,
+          marginTop: 2,
+          textDecoration: 'none',
+        }}
+      >
+        <Phone size={13} />
+        {doctor.phone}
+      </a>
     </div>
   );
 }
@@ -89,34 +146,81 @@ export default function Dashboard() {
     const lesion = getLesion(predictedClass) || { label: predictedClass, risk: 'Consult a dermatologist', color: '#8a9bb5' };
     const conf = result.confidence ?? 0;
     const pct = Math.round(conf * 100);
+    const doctors = result.recommended_dermatologists || [];
 
     const doc = new jsPDF();
-    doc.setFillColor(10, 12, 15); doc.rect(0, 0, 210, 297, 'F');
+
+    // Dark background
+    doc.setFillColor(10, 12, 15);
+    doc.rect(0, 0, 210, 297, 'F');
+
+    // Header
     doc.setFont('helvetica','bold'); doc.setFontSize(22); doc.setTextColor(232,237,245);
     doc.text('DermaVision', 20, 28);
     doc.setFontSize(11); doc.setFont('helvetica','normal'); doc.setTextColor(138,155,181);
     doc.text('AI Skin Lesion Screening Report', 20, 38);
     doc.text(`Generated: ${new Date().toLocaleString()}`, 20, 46);
     doc.setDrawColor(30,40,56); doc.line(20, 52, 190, 52);
+
+    // Screening result
     doc.setFontSize(13); doc.setFont('helvetica','bold'); doc.setTextColor(138,155,181);
     doc.text('SCREENING RESULT', 20, 66);
-    doc.setFontSize(26); doc.setTextColor(232,237,245);
-    doc.text(lesion.label, 20, 82);
+    doc.setFontSize(24); doc.setTextColor(232,237,245);
+    doc.text(lesion.label, 20, 80);
     doc.setFontSize(12); doc.setFont('helvetica','normal'); doc.setTextColor(138,155,181);
-    doc.text(`Risk Level: ${lesion.risk}`, 20, 96);
-    doc.text(`Confidence Score: ${pct}%`, 20, 108);
-    doc.text(`Inconclusive: ${result.inconclusive ? 'Yes — consult dermatologist' : 'No'}`, 20, 120);
+    doc.text(`Risk Level: ${lesion.risk}`, 20, 92);
+    doc.text(`Confidence Score: ${pct}%`, 20, 102);
+    doc.text(`Inconclusive: ${result.inconclusive ? 'Yes — consult dermatologist' : 'No'}`, 20, 112);
+
+    // Recommended Dermatologists section
+    let yPos = 128;
+    if (doctors.length > 0) {
+      doc.setDrawColor(30,40,56); doc.line(20, 120, 190, 120);
+      doc.setFontSize(13); doc.setFont('helvetica','bold'); doc.setTextColor(138,155,181);
+      doc.text('RECOMMENDED DERMATOLOGISTS', 20, yPos);
+      yPos += 12;
+
+      doctors.forEach((dr, i) => {
+        // Check if we need a new page
+        if (yPos > 250) {
+          doc.addPage();
+          doc.setFillColor(10, 12, 15);
+          doc.rect(0, 0, 210, 297, 'F');
+          yPos = 20;
+        }
+
+        doc.setFontSize(12); doc.setFont('helvetica','bold'); doc.setTextColor(232,237,245);
+        doc.text(`${i + 1}. ${dr.name}`, 20, yPos); yPos += 8;
+
+        doc.setFontSize(10); doc.setFont('helvetica','normal'); doc.setTextColor(138,155,181);
+        doc.text(`   Specialty:     ${dr.specialty}`, 20, yPos); yPos += 7;
+        doc.text(`   Hospital:      ${dr.hospital}`, 20, yPos); yPos += 7;
+        doc.text(`   Availability:  ${dr.availability}`, 20, yPos); yPos += 7;
+        doc.text(`   Phone:         ${dr.phone}`, 20, yPos); yPos += 12;
+      });
+    }
+
+    // Disclaimer
+    if (yPos > 240) {
+      doc.addPage();
+      doc.setFillColor(10, 12, 15);
+      doc.rect(0, 0, 210, 297, 'F');
+      yPos = 20;
+    }
+    doc.setDrawColor(30,40,56); doc.line(20, yPos, 190, yPos); yPos += 10;
     doc.setFontSize(11); doc.setFont('helvetica','bold'); doc.setTextColor(138,155,181);
-    doc.text('IMPORTANT DISCLAIMER', 20, 140);
+    doc.text('IMPORTANT DISCLAIMER', 20, yPos); yPos += 8;
     doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(138,155,181);
     const disc = 'This report is generated by an AI model for research and educational screening purposes only. It does NOT constitute a medical diagnosis. Always consult a qualified dermatologist for professional medical evaluation and advice.';
-    doc.text(doc.splitTextToSize(disc, 170), 20, 152);
+    doc.text(doc.splitTextToSize(disc, 170), 20, yPos);
+
     doc.save(`dermavision-screening-${Date.now()}.pdf`);
   };
 
   const predictedClass = result?.predicted_class || '';
   const lesion = getLesion(predictedClass);
   const conf = result ? (result.confidence ?? 0) : 0;
+  const doctors = result?.recommended_dermatologists || [];
 
   return (
     <AppLayout>
@@ -127,7 +231,7 @@ export default function Dashboard() {
 
       <div className="dashboard-grid">
 
-        {/* Upload panel */}
+        {/* ── Upload panel ── */}
         <div className="card">
           <div className="card-label">Image Input</div>
           {!preview ? (
@@ -147,11 +251,13 @@ export default function Dashboard() {
               </button>
             </div>
           )}
+
           {error && (
             <div className="alert alert-error" style={{ marginTop:12 }}>
               <AlertCircle size={15} /> {error}
             </div>
           )}
+
           <button
             className="btn-primary"
             style={{ width:'100%', marginTop:16 }}
@@ -162,19 +268,16 @@ export default function Dashboard() {
               ? <><Loader2 size={18} className="spin" /> Analyzing…</>
               : <><Upload size={16} /> Analyze image</>}
           </button>
+
           {loading && <div className="pulse-bar"><div className="pulse-fill" /></div>}
 
-          {/* Security microcopy */}
-          <p style={{
-            fontSize:11, color:'var(--text3)', textAlign:'center',
-            marginTop:12, lineHeight:1.6
-          }}>
+          <p style={{ fontSize:11, color:'var(--text3)', textAlign:'center', marginTop:12, lineHeight:1.6 }}>
             🔒 Your images are handled securely and used only for screening analysis.
           </p>
         </div>
 
-        {/* Result panel */}
-        <div className="card result-card">
+        {/* ── Result panel ── */}
+        <div className="card result-card" style={{ height:'auto', overflowY:'auto' }}>
           <div className="card-label">Screening Result</div>
 
           {!result && !loading && (
@@ -213,13 +316,13 @@ export default function Dashboard() {
                 </div>
               )}
 
-              {/* Predicted class */}
+              {/* Class name */}
               <div className="result-name">{lesion?.label || predictedClass || 'Unknown'}</div>
               <div className="result-code" style={{ fontSize:11, color:'var(--text3)', marginTop:-8 }}>
                 AI Classification
               </div>
 
-              {/* Confidence gauge */}
+              {/* Gauge */}
               <ConfidenceGauge value={conf} />
 
               {/* Confidence bar */}
@@ -231,7 +334,27 @@ export default function Dashboard() {
                 <span className="confidence-pct">{Math.round(conf*100)}%</span>
               </div>
 
-              {/* Prominent disclaimer */}
+              {/* ── Recommended Dermatologists ── */}
+              {doctors.length > 0 && (
+                <div style={{ marginTop:8 }}>
+                  <div style={{
+                    display:'flex', alignItems:'center', gap:6,
+                    marginBottom:10,
+                  }}>
+                    <User size={14} style={{ color:'var(--accent2)' }} />
+                    <span style={{ fontSize:12, fontWeight:600, color:'var(--text2)', textTransform:'uppercase', letterSpacing:'0.06em' }}>
+                      Recommended Dermatologists
+                    </span>
+                  </div>
+                  <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+                    {doctors.map(dr => (
+                      <DoctorCard key={dr.id} doctor={dr} />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Disclaimer */}
               <div style={{
                 background:'rgba(251,191,36,0.08)',
                 border:'1px solid rgba(251,191,36,0.2)',
